@@ -1,23 +1,28 @@
+const argon2 = require("argon2");
 const User = require('./../models/userModel');
 const ShoppingCart = require('./../models/shoppingCartModel');
 
 exports.renderRegisterView = (req, res) => {
   res.render('register', {id:''});
 }
-exports.registerUser = (req, res) => {
+async function hashPassword(plainTextPassword) {
+    return await argon2.hash(plainTextPassword);
+}
+
+exports.registerUser = async (req, res) => {
   new User(
     {
       firstName: req.body.firstName,
       lastName: req.body.lastName,
       email: req.body.email,
-      password: req.body.password,
+      password: await hashPassword(req.body.password),
       address: req.body.address,
       ShoppingCart: new ShoppingCart({ products: [] }),
     }
   )
     .save()
     .then(result => {
-      console.log(result.id)
+      console.log(result);
       res.render('register_success', {user: req.body.firstName, id: result.id});
     })
     .catch(error => {
