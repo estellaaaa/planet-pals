@@ -16,6 +16,12 @@ const products = {
 };
 
 
+exports.renderShoppingCart = (req, res) => {
+    console.log('yeeeeeeeeeeeeeeee;',req.user)
+    res.render("shoppingcart", {user: req.user});
+};
+
+
 exports.renderSearchView = (req, res) => {
     res.render("searchview", {products: req.data});
 }

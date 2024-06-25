@@ -4,8 +4,10 @@ Scrum Master: Estella
 BACKLOG
 
 
+
 IN PROGRESS
 
 
 DONE
-- add support for user login based on user id and password
+- implement login with authenticaton
+- implement logout
