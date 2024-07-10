@@ -16,6 +16,27 @@ async function verifyPassword(hashOfPassword, plainTextPassword) {
     }
 }
 
+exports.verifyToken = async (req, res, next) => {
+  try {
+      const apiToken = req.query.apiToken;
+
+      if (!apiToken) {
+          return res.status(400).send('API token is required');
+      }
+
+      const user = await User.findOne({ apiToken });
+
+      if (!user) {
+          return res.status(401).send('Invalid API token');
+      }
+
+      req.user = user;
+      next();
+  } catch (err) {
+      res.status(500).send('Server error');
+  }
+};
+
 exports.renderUsersTable = (req, res) => {
   User.find({})
     .then((users) => {
@@ -28,6 +49,21 @@ exports.renderUsersTable = (req, res) => {
 
 exports.renderLogin = (req, res) => {
   res.render('login');
+}
+exports.renderProfile = (req, res) => {
+    console.log(req.query)
+    console.log(req.query.apiToken)
+    User.findOne({apiToken: req.query.apiToken})
+        .then(async (user) => {
+            if (user == null) {
+                console.log('user not found:');
+                res.render('error')
+            }
+            res.render('profile', {user: user});
+        })
+        .catch((error) => {
+            console.error(error);
+        })
 }
 exports.loginUser = async (req, res) => {
     User.findOne({email: req.body.user})
